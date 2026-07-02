@@ -1,1 +1,1924 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulado ENEM - Linguagens e Humanas</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f7fb;
+      color: #172033;
+    }
+
+    header {
+      background: #1f5eff;
+      color: white;
+      padding: 22px 18px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 6px;
+      font-size: 26px;
+    }
+
+    header p {
+      margin: 0;
+      opacity: 0.92;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 18px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #dce4f2;
+      border-radius: 8px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(15, 35, 80, 0.06);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #eef3ff;
+      color: #244bb8;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .progress {
+      height: 10px;
+      background: #e6edf8;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 10px 0 18px;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: #1f5eff;
+      transition: width 0.2s ease;
+    }
+
+    .question h2 {
+      font-size: 19px;
+      margin: 0 0 12px;
+      line-height: 1.35;
+    }
+
+    .context {
+      background: #f7f9fd;
+      border-left: 4px solid #1f5eff;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      color: #2f3b52;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .option {
+      border: 1px solid #ccd7e8;
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      background: white;
+      transition: 0.15s ease;
+      line-height: 1.4;
+    }
+
+    .option:hover {
+      border-color: #1f5eff;
+      background: #f5f8ff;
+    }
+
+    .option.selected {
+      background: #eaf0ff;
+      border-color: #1f5eff;
+      color: #113997;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 15px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #1f5eff;
+      color: white;
+    }
+
+    button.secondary {
+      background: #e8eef8;
+      color: #1c2d4f;
+    }
+
+    button.danger {
+      background: #e54848;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    aside {
+      position: sticky;
+      top: 14px;
+      align-self: start;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat {
+      background: #f7f9fd;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 20px;
+      color: #1f5eff;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .qbtn {
+      padding: 8px 0;
+      border-radius: 6px;
+      font-size: 12px;
+      background: #edf2fa;
+      color: #20304d;
+    }
+
+    .qbtn.answered {
+      background: #1f5eff;
+      color: white;
+    }
+
+    .qbtn.current {
+      outline: 3px solid #ffcb3d;
+    }
+
+    .result {
+      display: none;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .big-stat {
+      background: #f7f9fd;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .big-stat strong {
+      display: block;
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .correct {
+      color: #16824a;
+    }
+
+    .wrong {
+      color: #d33333;
+    }
+
+    .review {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .review-item {
+      border: 1px solid #dce4f2;
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcff;
+    }
+
+    .review-item strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    @media (max-width: 850px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+      }
+
+      .result-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Simulado ENEM</h1>
+    <p>90 questões de Linguagens e Ciências Humanas com resultado final</p>
+  </header>
+
+  <main>
+    <section class="card" id="exam">
+      <div class="topbar">
+        <span class="badge" id="areaBadge">Questão</span>
+        <span class="badge" id="answeredBadge">0 de 90 respondidas</span>
+      </div>
+
+      <div class="progress"><span id="progressBar"></span></div>
+
+      <div class="question">
+        <h2 id="questionTitle"></h2>
+        <div class="context" id="questionContext"></div>
+        <div class="options" id="options"></div>
+      </div>
+
+      <div class="actions">
+        <button class="secondary" id="prevBtn">Anterior</button>
+        <button class="secondary" id="nextBtn">Próxima</button>
+        <button class="danger" id="finishBtn">Finalizar simulado</button>
+      </div>
+    </section>
+
+    <aside class="card" id="sidebar">
+      <div class="stats">
+        <div class="stat">
+          <strong id="currentNumber">1</strong>
+          atual
+        </div>
+        <div class="stat">
+          <strong id="answeredCount">0</strong>
+          feitas
+        </div>
+      </div>
+      <strong>Mapa de questões</strong>
+      <div class="palette" id="palette"></div>
+    </aside>
+
+    <section class="card result" id="result">
+      <h2>Resultado final</h2>
+      <p>Confira seu desempenho geral e revise as questões que errou.</p>
+
+      <div class="result-grid">
+        <div class="big-stat">
+          <strong id="scoreTotal">0</strong>
+          acertos
+        </div>
+        <div class="big-stat">
+          <strong id="wrongTotal">0</strong>
+          erros
+        </div>
+        <div class="big-stat">
+          <strong id="blankTotal">0</strong>
+          em branco
+        </div>
+        <div class="big-stat">
+          <strong id="percentTotal">0%</strong>
+          aproveitamento
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="restartBtn">Refazer simulado</button>
+      </div>
+
+      <div class="review" id="review"></div>
+    </section>
+  </main>
+
+  <script>
+    const themes = [
+      {
+        area: "Linguagens",
+        topic: "interpretação textual",
+        context: "Em uma campanha pública, o texto afirma que pequenas escolhas diárias, como reduzir o desperdício e compartilhar informações confiáveis, podem transformar hábitos coletivos.",
+        question: "A estratégia argumentativa central do texto é",
+        options: [
+          "associar ações individuais a efeitos sociais mais amplos.",
+          "defender que apenas leis resolvem problemas coletivos.",
+          "negar a importância da participação cidadã.",
+          "substituir informação por apelo exclusivamente emocional.",
+          "apresentar o consumo como solução única."
+        ],
+        answer: 0,
+        explanation: "O texto valoriza práticas individuais como parte de uma mudança coletiva."
+      },
+      {
+        area: "Linguagens",
+        topic: "variação linguística",
+        context: "Em uma crônica, o narrador reproduz falas populares com marcas de oralidade, sem ridicularizar os personagens.",
+        question: "Nesse caso, o uso da variedade linguística contribui para",
+        options: [
+          "construir verossimilhança e identidade social dos personagens.",
+          "provar que a norma-padrão deve ser abandonada.",
+          "impedir a compreensão do leitor.",
+          "reduzir o valor literário do texto.",
+          "eliminar diferenças regionais."
+        ],
+        answer: 0,
+        explanation: "A variação linguística ajuda a caracterizar personagens e contextos."
+      },
+      {
+        area: "Linguagens",
+        topic: "funções da linguagem",
+        context: "Um anúncio diz: 'Doe sangue hoje. Uma atitude simples pode salvar vidas.'",
+        question: "Predomina nesse trecho a função",
+        options: [
+          "conativa, pois busca convencer o leitor a agir.",
+          "metalinguística, pois explica o código usado.",
+          "fática, pois testa o canal de comunicação.",
+          "poética, pois prioriza jogos sonoros.",
+          "referencial, pois evita qualquer apelo."
+        ],
+        answer: 0,
+        explanation: "O imperativo e o chamado à ação indicam função conativa."
+      },
+      {
+        area: "Linguagens",
+        topic: "literatura brasileira",
+        context: "Um poema modernista utiliza linguagem cotidiana, versos livres e humor para criticar solenidades vazias.",
+        question: "Essa escolha estética se aproxima do Modernismo por",
+        options: [
+          "romper com padrões formais rígidos e valorizar a linguagem brasileira.",
+          "retomar integralmente modelos clássicos europeus.",
+          "defender vocabulário arcaico como única forma artística.",
+          "rejeitar temas nacionais.",
+          "substituir poesia por descrição científica."
+        ],
+        answer: 0,
+        explanation: "O Modernismo brasileiro valorizou ruptura formal e aproximação com a fala cotidiana."
+      },
+      {
+        area: "Linguagens",
+        topic: "gêneros textuais",
+        context: "Um texto apresenta dados, cita especialistas e conclui defendendo uma posição sobre o uso de celulares nas escolas.",
+        question: "Esse texto se caracteriza como",
+        options: [
+          "artigo de opinião.",
+          "receita culinária.",
+          "verbete enciclopédico neutro.",
+          "manual de instruções.",
+          "bilhete informal."
+        ],
+        answer: 0,
+        explanation: "Há defesa de ponto de vista com argumentos, traço típico do artigo de opinião."
+      },
+      {
+        area: "Linguagens",
+        topic: "coesão textual",
+        context: "No período 'Muitos jovens leem notícias pelas redes; entretanto, nem sempre verificam as fontes', o conectivo destacado estabelece",
+        question: "A relação semântica expressa por 'entretanto' é de",
+        options: [
+          "oposição.",
+          "causa.",
+          "adição.",
+          "conclusão.",
+          "tempo."
+        ],
+        answer: 0,
+        explanation: "'Entretanto' introduz uma ideia contrária à expectativa anterior."
+      },
+      {
+        area: "Linguagens",
+        topic: "arte e sociedade",
+        context: "Um mural urbano retrata trabalhadores anônimos em tamanho ampliado no centro da cidade.",
+        question: "A obra produz sentido social ao",
+        options: [
+          "dar visibilidade a sujeitos geralmente invisibilizados.",
+          "afastar a arte do espaço público.",
+          "impedir leituras políticas da imagem.",
+          "valorizar apenas museus tradicionais.",
+          "negar a presença do cotidiano na arte."
+        ],
+        answer: 0,
+        explanation: "A ampliação dos trabalhadores no espaço urbano valoriza sua presença social."
+      },
+      {
+        area: "Linguagens",
+        topic: "leitura de imagem",
+        context: "Em uma charge, um personagem segura uma pilha de livros enquanto outro pergunta se 'resumo de internet' substitui estudo.",
+        question: "O humor da charge decorre principalmente da crítica à",
+        options: [
+          "substituição do estudo aprofundado por atalhos superficiais.",
+          "existência de bibliotecas públicas.",
+          "leitura como prática escolar.",
+          "produção de livros impressos.",
+          "curiosidade dos estudantes."
+        ],
+        answer: 0,
+        explanation: "A charge ironiza a busca por resumos como substituição do estudo."
+      },
+      {
+        area: "Linguagens",
+        topic: "tecnologia e linguagem",
+        context: "Em mensagens digitais, abreviações, emojis e memes são usados para acelerar a comunicação e marcar emoções.",
+        question: "Esses recursos indicam que a linguagem digital",
+        options: [
+          "adapta-se às necessidades comunicativas de seus usuários.",
+          "não possui regras de uso em nenhuma situação.",
+          "elimina totalmente a linguagem verbal.",
+          "deve ser usada em todo texto formal.",
+          "é inferior a qualquer fala presencial."
+        ],
+        answer: 0,
+        explanation: "A linguagem muda conforme suporte, contexto e finalidade."
+      },
+      {
+        area: "Linguagens",
+        topic: "educação física",
+        context: "Uma escola propõe práticas corporais diversas, como dança, jogos indígenas e esportes coletivos.",
+        question: "A proposta amplia o conceito de educação física ao",
+        options: [
+          "reconhecer manifestações corporais como práticas culturais.",
+          "reduzir o corpo ao rendimento competitivo.",
+          "excluir tradições populares do currículo.",
+          "priorizar somente exercícios repetitivos.",
+          "avaliar todos pelo mesmo desempenho atlético."
+        ],
+        answer: 0,
+        explanation: "A educação física escolar também aborda cultura, identidade e expressão corporal."
+      },
+      {
+        area: "Linguagens",
+        topic: "semântica",
+        context: "A frase 'Ele quebrou o silêncio da sala' não se refere a um objeto físico quebrado.",
+        question: "O sentido produzido é exemplo de",
+        options: [
+          "linguagem figurada.",
+          "denotação literal.",
+          "erro gramatical obrigatório.",
+          "termo técnico científico.",
+          "tradução automática."
+        ],
+        answer: 0,
+        explanation: "A expressão usa sentido figurado para indicar interrupção do silêncio."
+      },
+      {
+        area: "Linguagens",
+        topic: "argumentação",
+        context: "Um editorial defende a vacinação com base em estatísticas de redução de internações.",
+        question: "O principal tipo de argumento usado é",
+        options: [
+          "argumento por evidência.",
+          "argumento de ameaça pessoal.",
+          "argumento sem relação temática.",
+          "argumento circular.",
+          "argumento exclusivamente estético."
+        ],
+        answer: 0,
+        explanation: "Dados estatísticos funcionam como evidências para sustentar a tese."
+      },
+      {
+        area: "Linguagens",
+        topic: "intertextualidade",
+        context: "Uma propaganda recria a frase 'ser ou não ser' para vender um curso de teatro.",
+        question: "O efeito de sentido depende de",
+        options: [
+          "referência a outro texto conhecido.",
+          "ausência de memória cultural.",
+          "eliminação do leitor.",
+          "uso de linguagem sem contexto.",
+          "contradição gramatical."
+        ],
+        answer: 0,
+        explanation: "A propaganda usa intertextualidade ao dialogar com Shakespeare."
+      },
+      {
+        area: "Linguagens",
+        topic: "literatura e denúncia",
+        context: "Um romance apresenta a seca, a fome e o deslocamento de famílias pobres no sertão.",
+        question: "A representação literária tem função social ao",
+        options: [
+          "denunciar desigualdades e condições históricas de vida.",
+          "transformar pobreza em detalhe irrelevante.",
+          "apagar conflitos regionais.",
+          "negar relação entre literatura e sociedade.",
+          "substituir personagens por fórmulas matemáticas."
+        ],
+        answer: 0,
+        explanation: "A literatura pode representar e problematizar realidades sociais."
+      },
+      {
+        area: "Linguagens",
+        topic: "norma-padrão",
+        context: "Em uma redação escolar, o estudante deve adequar linguagem, argumentos e estrutura à situação formal.",
+        question: "A adequação linguística exige",
+        options: [
+          "selecionar a variedade compatível com o gênero e o contexto.",
+          "usar apenas gírias para aproximar o leitor.",
+          "ignorar regras de pontuação.",
+          "evitar qualquer organização textual.",
+          "misturar registros sem finalidade."
+        ],
+        answer: 0,
+        explanation: "Adequação é escolher recursos linguísticos conforme situação comunicativa."
+      },
+      {
+        area: "Linguagens",
+        topic: "mídia",
+        context: "Uma notícia apresenta título alarmista, não informa fonte e usa imagem fora de contexto.",
+        question: "Para avaliar sua confiabilidade, o leitor deve",
+        options: [
+          "verificar autoria, data, fonte e contexto da imagem.",
+          "compartilhar rapidamente por parecer urgente.",
+          "confiar apenas no impacto do título.",
+          "ignorar outros veículos de informação.",
+          "avaliar somente o tamanho do texto."
+        ],
+        answer: 0,
+        explanation: "Checar fontes e contexto é essencial para leitura crítica da mídia."
+      },
+      {
+        area: "Linguagens",
+        topic: "poesia",
+        context: "Um poema organiza repetições sonoras e pausas para criar ritmo e intensificar sentimentos.",
+        question: "Esses recursos evidenciam a função",
+        options: [
+          "poética da linguagem.",
+          "fática da linguagem.",
+          "metalinguística da linguagem.",
+          "jurídica da linguagem.",
+          "cartográfica da linguagem."
+        ],
+        answer: 0,
+        explanation: "Na função poética, a forma da mensagem ganha destaque."
+      },
+      {
+        area: "Linguagens",
+        topic: "crônica",
+        context: "Um texto parte de uma cena comum no ônibus para refletir sobre pressa, convivência e cidade.",
+        question: "A crônica se caracteriza por",
+        options: [
+          "transformar situações cotidianas em reflexão crítica ou sensível.",
+          "apresentar somente leis e decretos.",
+          "impedir marcas de subjetividade.",
+          "tratar apenas de fatos históricos distantes.",
+          "usar linguagem exclusivamente técnica."
+        ],
+        answer: 0,
+        explanation: "A crônica costuma partir do cotidiano para construir reflexão."
+      },
+      {
+        area: "Linguagens",
+        topic: "publicidade",
+        context: "Um anúncio de transporte coletivo mostra ruas menos congestionadas e a frase 'Sua escolha move a cidade'.",
+        question: "A mensagem busca convencer o público por meio da",
+        options: [
+          "associação entre escolha individual e benefício coletivo.",
+          "negação de problemas urbanos.",
+          "valorização exclusiva do automóvel.",
+          "ausência de qualquer apelo visual.",
+          "defesa do isolamento social."
+        ],
+        answer: 0,
+        explanation: "O anúncio liga a ação individual ao impacto positivo na cidade."
+      },
+      {
+        area: "Linguagens",
+        topic: "oralidade",
+        context: "Em um podcast, os apresentadores usam pausas, entonação e retomadas para manter o diálogo compreensível.",
+        question: "Esses elementos mostram que a oralidade",
+        options: [
+          "possui recursos próprios de organização do sentido.",
+          "é sempre desorganizada e sem função comunicativa.",
+          "dispensa interação com o ouvinte.",
+          "é idêntica à escrita acadêmica.",
+          "não depende de contexto."
+        ],
+        answer: 0,
+        explanation: "A fala utiliza entonação, pausas e retomadas como recursos significativos."
+      },
+      {
+        area: "Linguagens",
+        topic: "patrimônio cultural",
+        context: "Uma comunidade luta para preservar uma festa popular transmitida entre gerações.",
+        question: "A preservação dessa prática se justifica porque ela",
+        options: [
+          "compõe a memória e a identidade cultural do grupo.",
+          "só tem valor se gerar lucro imediato.",
+          "deve ser substituída por padrões externos.",
+          "não possui relação com história local.",
+          "é inferior a manifestações eruditas."
+        ],
+        answer: 0,
+        explanation: "Festas populares podem ser patrimônio imaterial e expressão de identidade."
+      },
+      {
+        area: "Linguagens",
+        topic: "redação ENEM",
+        context: "Uma proposta de intervenção apresenta agente, ação, meio, finalidade e detalhamento.",
+        question: "Essa estrutura atende à competência da redação que avalia",
+        options: [
+          "elaboração de proposta de intervenção para o problema discutido.",
+          "uso exclusivo de citações literárias.",
+          "ausência de posicionamento crítico.",
+          "narração de experiência pessoal sem tese.",
+          "cópia integral dos textos motivadores."
+        ],
+        answer: 0,
+        explanation: "A competência 5 avalia proposta de intervenção completa e respeitosa aos direitos humanos."
+      },
+      {
+        area: "Linguagens",
+        topic: "ambiguidade",
+        context: "Na frase 'Vi o professor com o telescópio', não fica claro quem usava o telescópio.",
+        question: "O problema de sentido decorre de",
+        options: [
+          "ambiguidade sintática.",
+          "excesso de pontuação correta.",
+          "uso de estrangeirismo.",
+          "denotação científica.",
+          "coesão perfeita."
+        ],
+        answer: 0,
+        explanation: "A estrutura permite duas interpretações, gerando ambiguidade."
+      },
+      {
+        area: "Linguagens",
+        topic: "língua estrangeira",
+        context: "Em um cartaz em inglês, lê-se: 'Recycle today for a cleaner tomorrow.'",
+        question: "A ideia principal do cartaz é",
+        options: [
+          "incentivar a reciclagem como ação voltada ao futuro.",
+          "desencorajar práticas ambientais.",
+          "anunciar um produto eletrônico.",
+          "explicar regras gramaticais do inglês.",
+          "celebrar apenas o consumo imediato."
+        ],
+        answer: 0,
+        explanation: "A frase relaciona reciclagem hoje a um amanhã mais limpo."
+      },
+      {
+        area: "Linguagens",
+        topic: "leitura crítica",
+        context: "Um influenciador divulga um produto sem informar que recebeu pagamento pela propaganda.",
+        question: "A atitude compromete a comunicação porque",
+        options: [
+          "oculta do público uma informação relevante sobre o interesse comercial.",
+          "torna a mensagem automaticamente científica.",
+          "elimina qualquer possibilidade de persuasão.",
+          "prova a neutralidade do anúncio.",
+          "dispensa ética na circulação de conteúdo."
+        ],
+        answer: 0,
+        explanation: "A transparência sobre publicidade é parte da leitura crítica e ética da mídia."
+      },
+      {
+        area: "Linguagens",
+        topic: "paródia",
+        context: "Uma música conhecida recebe nova letra para criticar o aumento do preço dos alimentos.",
+        question: "O recurso utilizado é a paródia, pois",
+        options: [
+          "retoma uma obra conhecida com intenção crítica ou humorística.",
+          "copia a obra sem alteração de sentido.",
+          "elimina qualquer relação com cultura popular.",
+          "usa apenas linguagem técnica.",
+          "impede reconhecimento pelo público."
+        ],
+        answer: 0,
+        explanation: "A paródia recria um texto anterior para produzir novo efeito."
+      },
+      {
+        area: "Linguagens",
+        topic: "sinais de pontuação",
+        context: "Em 'Vamos comer, crianças!', a vírgula separa o vocativo.",
+        question: "Sem a vírgula, a frase teria",
+        options: [
+          "sentido alterado, sugerindo que as crianças seriam comidas.",
+          "o mesmo sentido obrigatório.",
+          "apenas mudança de fonte.",
+          "correção gramatical superior.",
+          "ausência de qualquer ambiguidade."
+        ],
+        answer: 0,
+        explanation: "A vírgula no vocativo evita mudança de sentido."
+      },
+      {
+        area: "Linguagens",
+        topic: "romantismo",
+        context: "Um poema apresenta idealização amorosa, subjetividade intensa e exaltação da natureza.",
+        question: "Essas características remetem ao",
+        options: [
+          "Romantismo.",
+          "Parnasianismo científico.",
+          "Realismo documental puro.",
+          "Concretismo visual.",
+          "Naturalismo urbano tecnológico."
+        ],
+        answer: 0,
+        explanation: "Subjetividade, idealização e natureza são marcas frequentes do Romantismo."
+      },
+      {
+        area: "Linguagens",
+        topic: "realismo",
+        context: "Um narrador analisa ironicamente os interesses sociais por trás de um casamento conveniente.",
+        question: "Essa abordagem aproxima-se do Realismo por",
+        options: [
+          "criticar relações sociais e aparências burguesas.",
+          "idealizar personagens sem conflitos.",
+          "evitar análise psicológica.",
+          "defender fuga completa da realidade.",
+          "substituir narrativa por propaganda."
+        ],
+        answer: 0,
+        explanation: "O Realismo critica aparências sociais e investiga comportamentos."
+      },
+      {
+        area: "Linguagens",
+        topic: "multimodalidade",
+        context: "Uma postagem combina texto curto, imagem, cores e hashtags para defender uma causa.",
+        question: "A construção de sentido ocorre de modo",
+        options: [
+          "multimodal, pela articulação de diferentes linguagens.",
+          "exclusivamente sonoro.",
+          "apenas gramatical.",
+          "sem relação com imagem.",
+          "incompatível com redes sociais."
+        ],
+        answer: 0,
+        explanation: "Textos digitais frequentemente combinam linguagem verbal e visual."
+      },
+      {
+        area: "Linguagens",
+        topic: "metalinguagem",
+        context: "Um poema fala sobre o próprio ato de escrever poemas.",
+        question: "Esse procedimento é chamado de",
+        options: [
+          "metalinguagem.",
+          "eufemismo.",
+          "regionalismo.",
+          "hipérbole obrigatória.",
+          "enumeração científica."
+        ],
+        answer: 0,
+        explanation: "Metalinguagem ocorre quando a linguagem fala de si mesma."
+      },
+      {
+        area: "Linguagens",
+        topic: "tirinha",
+        context: "Em uma tirinha, o personagem responde literalmente a uma pergunta que deveria ser entendida em sentido figurado.",
+        question: "O humor nasce da",
+        options: [
+          "quebra de expectativa entre sentido literal e figurado.",
+          "ausência de personagens.",
+          "repetição de dados estatísticos.",
+          "descrição neutra de paisagem.",
+          "falta de qualquer diálogo."
+        ],
+        answer: 0,
+        explanation: "O efeito cômico surge do contraste entre interpretações."
+      },
+      {
+        area: "Linguagens",
+        topic: "discurso",
+        context: "Um texto escolar afirma que 'todo jovem é desinteressado', ignorando diferenças sociais e culturais.",
+        question: "A afirmação revela",
+        options: [
+          "generalização estereotipada.",
+          "argumentação equilibrada.",
+          "análise de diversidade.",
+          "uso adequado de evidências.",
+          "neutralidade absoluta."
+        ],
+        answer: 0,
+        explanation: "A frase generaliza um grupo diverso de forma estereotipada."
+      },
+      {
+        area: "Linguagens",
+        topic: "arte contemporânea",
+        context: "Uma instalação artística permite que visitantes movimentem objetos e modifiquem a obra.",
+        question: "A proposta destaca",
+        options: [
+          "participação do público na construção do sentido.",
+          "distância obrigatória entre obra e espectador.",
+          "arte como objeto intocável sempre.",
+          "ausência de interação.",
+          "eliminação do espaço expositivo."
+        ],
+        answer: 0,
+        explanation: "Muitas obras contemporâneas incorporam a participação do público."
+      },
+      {
+        area: "Linguagens",
+        topic: "texto instrucional",
+        context: "Um manual apresenta etapas numeradas para configurar um aplicativo.",
+        question: "A finalidade principal desse gênero é",
+        options: [
+          "orientar a realização de uma ação.",
+          "narrar uma aventura fictícia.",
+          "defender tese política.",
+          "expressar sentimentos líricos.",
+          "descrever personagem literário."
+        ],
+        answer: 0,
+        explanation: "Textos instrucionais orientam procedimentos."
+      },
+      {
+        area: "Linguagens",
+        topic: "concordância",
+        context: "A frase 'Faz dois anos que estudo para o ENEM' emprega o verbo fazer indicando tempo decorrido.",
+        question: "Nesse uso, o verbo deve ficar",
+        options: [
+          "no singular, por ser impessoal.",
+          "no plural, concordando com anos.",
+          "sempre no futuro.",
+          "sem sujeito composto.",
+          "na forma nominal obrigatória."
+        ],
+        answer: 0,
+        explanation: "Quando indica tempo decorrido, 'fazer' é impessoal e fica no singular."
+      },
+      {
+        area: "Linguagens",
+        topic: "letramento digital",
+        context: "Um estudante compara informações de três sites antes de produzir um trabalho.",
+        question: "Essa prática demonstra",
+        options: [
+          "letramento digital crítico.",
+          "cópia sem avaliação.",
+          "dependência de uma única fonte.",
+          "negação da pesquisa.",
+          "uso incorreto de tecnologia."
+        ],
+        answer: 0,
+        explanation: "Comparar fontes é habilidade importante de letramento digital."
+      },
+      {
+        area: "Linguagens",
+        topic: "pressupostos",
+        context: "A frase 'Até João entregou o trabalho' sugere uma expectativa anterior sobre João.",
+        question: "O termo 'até' indica o pressuposto de que",
+        options: [
+          "João era visto como alguém improvável de entregar.",
+          "todos os alunos foram proibidos de entregar.",
+          "o trabalho não existia.",
+          "a entrega ocorreu no futuro.",
+          "a frase não contém julgamento algum."
+        ],
+        answer: 0,
+        explanation: "'Até' cria ideia de surpresa em relação ao comportamento de João."
+      },
+      {
+        area: "Linguagens",
+        topic: "canção popular",
+        context: "Uma canção usa linguagem simples para narrar a vida de trabalhadores migrantes.",
+        question: "A canção pode ser lida como documento cultural porque",
+        options: [
+          "registra experiências sociais por meio de linguagem artística.",
+          "não dialoga com nenhum contexto histórico.",
+          "serve apenas para entretenimento sem sentido.",
+          "elimina a memória coletiva.",
+          "substitui toda pesquisa histórica."
+        ],
+        answer: 0,
+        explanation: "Canções podem expressar experiências e memórias sociais."
+      },
+      {
+        area: "Linguagens",
+        topic: "gênero notícia",
+        context: "Uma notícia responde a perguntas como o quê, quem, quando, onde e por quê.",
+        question: "Essa organização busca",
+        options: [
+          "informar o leitor de forma objetiva sobre um acontecimento.",
+          "criar enredo fantástico.",
+          "vender produto por apelo emocional.",
+          "ensinar receita culinária.",
+          "evitar dados verificáveis."
+        ],
+        answer: 0,
+        explanation: "A notícia organiza informações básicas sobre fatos de interesse público."
+      },
+      {
+        area: "Linguagens",
+        topic: "figuras de linguagem",
+        context: "Em 'A cidade acordou assustada', atribui-se ação humana à cidade.",
+        question: "A figura de linguagem é",
+        options: [
+          "personificação.",
+          "antítese.",
+          "onomatopeia.",
+          "elipse matemática.",
+          "pleonasmo vicioso obrigatório."
+        ],
+        answer: 0,
+        explanation: "Personificação atribui características humanas a seres ou coisas."
+      },
+      {
+        area: "Linguagens",
+        topic: "coesão referencial",
+        context: "No texto, 'esse problema' retoma a expressão 'descarte irregular de lixo'.",
+        question: "O recurso coesivo usado é",
+        options: [
+          "referenciação por retomada.",
+          "ruptura total de sentido.",
+          "enumeração sem vínculo.",
+          "rima interna.",
+          "tradução literal."
+        ],
+        answer: 0,
+        explanation: "A expressão retoma uma informação anterior, garantindo continuidade textual."
+      },
+      {
+        area: "Linguagens",
+        topic: "teatro",
+        context: "Uma peça utiliza iluminação, cenário, fala e movimento corporal para construir a narrativa.",
+        question: "O teatro é uma linguagem",
+        options: [
+          "multissemiótica, pois combina diferentes sistemas de signos.",
+          "exclusivamente escrita.",
+          "sem relação com performance.",
+          "apenas sonora.",
+          "incompatível com elementos visuais."
+        ],
+        answer: 0,
+        explanation: "O teatro articula palavra, corpo, espaço, som e imagem."
+      },
+      {
+        area: "Linguagens",
+        topic: "texto dissertativo",
+        context: "Uma redação apresenta tese, argumentos e conclusão com proposta social.",
+        question: "A estrutura predominante é",
+        options: [
+          "dissertativo-argumentativa.",
+          "narrativa de aventura.",
+          "descritiva sem opinião.",
+          "instrucional doméstica.",
+          "poética concreta."
+        ],
+        answer: 0,
+        explanation: "A redação ENEM exige defesa de ponto de vista com argumentos."
+      },
+      {
+        area: "Linguagens",
+        topic: "leitura literária",
+        context: "Um conto revela pouco a pouco que o narrador não compreende totalmente os fatos que narra.",
+        question: "Esse recurso exige do leitor",
+        options: [
+          "inferir sentidos além do que é dito explicitamente.",
+          "ignorar pistas do texto.",
+          "ler apenas o título.",
+          "substituir interpretação por memorização.",
+          "desconsiderar a voz narrativa."
+        ],
+        answer: 0,
+        explanation: "A leitura literária envolve inferências e análise da construção narrativa."
+      },
+
+      {
+        area: "Humanas",
+        topic: "cidadania",
+        context: "A Constituição reconhece direitos civis, políticos e sociais, como liberdade de expressão, voto e acesso à educação.",
+        question: "A cidadania plena depende da",
+        options: [
+          "garantia efetiva de direitos e participação social.",
+          "existência de direitos apenas no papel.",
+          "exclusão da população das decisões públicas.",
+          "restrição do voto a pequenos grupos.",
+          "ausência de políticas sociais."
+        ],
+        answer: 0,
+        explanation: "Cidadania envolve direitos garantidos e participação na vida pública."
+      },
+      {
+        area: "Humanas",
+        topic: "Revolução Industrial",
+        context: "Com a industrialização, o trabalho artesanal foi substituído em grande parte pela produção mecanizada nas fábricas.",
+        question: "Uma consequência social desse processo foi",
+        options: [
+          "formação de uma classe operária urbana submetida a longas jornadas.",
+          "fim imediato das desigualdades sociais.",
+          "desaparecimento das cidades industriais.",
+          "retorno completo ao feudalismo.",
+          "proibição mundial do comércio."
+        ],
+        answer: 0,
+        explanation: "A industrialização intensificou urbanização e trabalho fabril."
+      },
+      {
+        area: "Humanas",
+        topic: "colonização",
+        context: "Durante a colonização portuguesa, a plantation combinou grande propriedade, monocultura e trabalho escravizado.",
+        question: "Esse modelo estava voltado principalmente para",
+        options: [
+          "produção em larga escala destinada ao mercado externo.",
+          "distribuição igualitária de terras.",
+          "autonomia econômica dos povos originários.",
+          "pequena produção familiar sem exportação.",
+          "industrialização tecnológica imediata."
+        ],
+        answer: 0,
+        explanation: "A plantation colonial atendia interesses mercantis externos."
+      },
+      {
+        area: "Humanas",
+        topic: "globalização",
+        context: "Empresas produzem partes de um mesmo produto em diferentes países, buscando menores custos e mercados consumidores.",
+        question: "Esse fenômeno expressa",
+        options: [
+          "fragmentação produtiva no capitalismo global.",
+          "isolamento econômico absoluto.",
+          "fim das redes de transporte.",
+          "ausência de tecnologia nas trocas.",
+          "proibição de comércio internacional."
+        ],
+        answer: 0,
+        explanation: "A globalização intensifica redes produtivas internacionais."
+      },
+      {
+        area: "Humanas",
+        topic: "urbanização",
+        context: "Cidades crescem rapidamente sem infraestrutura suficiente de saneamento, transporte e moradia.",
+        question: "Esse processo tende a gerar",
+        options: [
+          "segregação socioespacial e desigualdade urbana.",
+          "distribuição perfeita de serviços.",
+          "fim das periferias.",
+          "ruralização obrigatória.",
+          "ausência de problemas ambientais."
+        ],
+        answer: 0,
+        explanation: "Urbanização desigual produz periferização e acesso desigual a serviços."
+      },
+      {
+        area: "Humanas",
+        topic: "Iluminismo",
+        context: "Pensadores iluministas defenderam razão, crítica ao absolutismo e direitos naturais.",
+        question: "Essas ideias contribuíram para",
+        options: [
+          "questionar privilégios e fundamentar movimentos revolucionários.",
+          "fortalecer o direito divino dos reis.",
+          "negar a importância da razão.",
+          "rejeitar debates políticos.",
+          "manter intacta a sociedade estamental."
+        ],
+        answer: 0,
+        explanation: "O Iluminismo influenciou revoluções liberais e críticas ao absolutismo."
+      },
+      {
+        area: "Humanas",
+        topic: "democracia",
+        context: "Em uma democracia, eleições livres, liberdade de imprensa e respeito às minorias são elementos fundamentais.",
+        question: "Esses elementos buscam assegurar",
+        options: [
+          "participação política e limitação do poder estatal.",
+          "concentração ilimitada do poder.",
+          "fim do debate público.",
+          "governo sem controle social.",
+          "exclusão de opiniões divergentes."
+        ],
+        answer: 0,
+        explanation: "Democracias dependem de participação, pluralismo e controle do poder."
+      },
+      {
+        area: "Humanas",
+        topic: "meio ambiente",
+        context: "O desmatamento em áreas de floresta altera o ciclo da água, reduz biodiversidade e afeta comunidades tradicionais.",
+        question: "A análise do problema exige considerar",
+        options: [
+          "relações entre natureza, economia e sociedade.",
+          "apenas o lucro imediato.",
+          "somente fatores climáticos sem ação humana.",
+          "a inexistência de populações locais.",
+          "a separação total entre ambiente e política."
+        ],
+        answer: 0,
+        explanation: "Questões ambientais envolvem dimensões ecológicas, sociais e econômicas."
+      },
+      {
+        area: "Humanas",
+        topic: "trabalho escravizado",
+        context: "A escravidão no Brasil estruturou relações econômicas, sociais e raciais por séculos.",
+        question: "Seus efeitos históricos podem ser percebidos hoje na",
+        options: [
+          "persistência de desigualdades raciais e sociais.",
+          "ausência completa de racismo.",
+          "igualdade econômica imediata após a abolição.",
+          "eliminação das hierarquias sociais.",
+          "distribuição automática de terras aos libertos."
+        ],
+        answer: 0,
+        explanation: "A abolição não eliminou as desigualdades produzidas pela escravidão."
+      },
+      {
+        area: "Humanas",
+        topic: "cartografia",
+        context: "Mapas utilizam escala, legenda e orientação para representar o espaço geográfico.",
+        question: "A escala cartográfica indica",
+        options: [
+          "a relação entre distância no mapa e distância real.",
+          "a cor obrigatória dos oceanos.",
+          "a opinião política do cartógrafo apenas.",
+          "o nome de todos os rios.",
+          "a idade geológica da Terra."
+        ],
+        answer: 0,
+        explanation: "Escala é a proporção entre representação e realidade."
+      },
+      {
+        area: "Humanas",
+        topic: "Primeira República",
+        context: "Na Primeira República brasileira, coronéis locais controlavam votos por meio de dependência econômica e coerção.",
+        question: "Esse fenômeno ficou conhecido como",
+        options: [
+          "coronelismo.",
+          "tenentismo cultural.",
+          "anarquismo estatal.",
+          "socialismo industrial.",
+          "parlamentarismo indígena."
+        ],
+        answer: 0,
+        explanation: "Coronelismo envolvia poder local e controle eleitoral."
+      },
+      {
+        area: "Humanas",
+        topic: "migração",
+        context: "Pessoas deixam sua região por falta de emprego, conflitos ou desastres ambientais.",
+        question: "Esses fatores são chamados de",
+        options: [
+          "fatores de repulsão.",
+          "fatores de fixação absoluta.",
+          "barreiras naturais inevitáveis.",
+          "causas sem relação social.",
+          "indicadores de sedentarismo."
+        ],
+        answer: 0,
+        explanation: "Fatores de repulsão motivam a saída de uma população."
+      },
+      {
+        area: "Humanas",
+        topic: "filosofia política",
+        context: "Para Rousseau, a legitimidade política depende de uma vontade geral voltada ao bem comum.",
+        question: "Essa ideia valoriza",
+        options: [
+          "participação coletiva na formação da soberania.",
+          "obediência cega ao monarca absoluto.",
+          "negação do contrato social.",
+          "supremacia de interesses privados sempre.",
+          "ausência de vida pública."
+        ],
+        answer: 0,
+        explanation: "Rousseau associa soberania à vontade geral."
+      },
+      {
+        area: "Humanas",
+        topic: "sociologia",
+        context: "Durkheim estudou fatos sociais como maneiras de agir e pensar exteriores ao indivíduo e dotadas de coerção.",
+        question: "Um exemplo de fato social é",
+        options: [
+          "normas coletivas que orientam comportamentos.",
+          "um sonho individual sem relação social.",
+          "uma preferência privada isolada.",
+          "um reflexo biológico involuntário.",
+          "uma escolha sem influência cultural."
+        ],
+        answer: 0,
+        explanation: "Fatos sociais são coletivos, exteriores e coercitivos."
+      },
+      {
+        area: "Humanas",
+        topic: "Guerra Fria",
+        context: "Após a Segunda Guerra, EUA e URSS disputaram influência política, econômica e militar.",
+        question: "A Guerra Fria caracterizou-se por",
+        options: [
+          "bipolaridade mundial e conflitos indiretos.",
+          "aliança militar permanente entre EUA e URSS.",
+          "ausência de corrida armamentista.",
+          "fim das disputas ideológicas.",
+          "isolamento total dos países periféricos."
+        ],
+        answer: 0,
+        explanation: "A Guerra Fria foi marcada por bipolaridade e disputas indiretas."
+      },
+      {
+        area: "Humanas",
+        topic: "população",
+        context: "A transição demográfica envolve queda das taxas de mortalidade e, depois, redução da natalidade.",
+        question: "Uma consequência desse processo é",
+        options: [
+          "envelhecimento populacional em muitos países.",
+          "crescimento eterno da natalidade.",
+          "desaparecimento das cidades.",
+          "fim das políticas previdenciárias.",
+          "aumento obrigatório da mortalidade infantil."
+        ],
+        answer: 0,
+        explanation: "Com menor natalidade e maior expectativa de vida, cresce a proporção de idosos."
+      },
+      {
+        area: "Humanas",
+        topic: "Renascimento",
+        context: "O Renascimento valorizou o humanismo, a observação da natureza e referências clássicas.",
+        question: "Esse movimento expressa",
+        options: [
+          "centralidade do ser humano e renovação cultural europeia.",
+          "rejeição total da arte greco-romana.",
+          "fim da produção artística.",
+          "negação de estudos científicos.",
+          "volta exclusiva ao pensamento feudal."
+        ],
+        answer: 0,
+        explanation: "O Renascimento valorizou humanismo, arte e conhecimento."
+      },
+      {
+        area: "Humanas",
+        topic: "geopolítica",
+        context: "A disputa por recursos energéticos influencia alianças, conflitos e estratégias de países.",
+        question: "Esse exemplo mostra que a geopolítica analisa",
+        options: [
+          "relações entre poder, território e interesses estratégicos.",
+          "apenas paisagens naturais sem política.",
+          "somente mapas climáticos.",
+          "temas sem relação com economia.",
+          "a inexistência de fronteiras."
+        ],
+        answer: 0,
+        explanation: "Geopolítica relaciona território, poder e estratégias."
+      },
+      {
+        area: "Humanas",
+        topic: "Revolução Francesa",
+        context: "A Revolução Francesa questionou privilégios do clero e da nobreza e proclamou igualdade jurídica.",
+        question: "Ela representou",
+        options: [
+          "crise do Antigo Regime e avanço de ideias liberais.",
+          "fortalecimento das ordens feudais.",
+          "retorno ao poder absoluto sem contestação.",
+          "fim da política moderna.",
+          "negação da cidadania."
+        ],
+        answer: 0,
+        explanation: "A Revolução Francesa abalou o Antigo Regime."
+      },
+      {
+        area: "Humanas",
+        topic: "agropecuária",
+        context: "O agronegócio moderno usa máquinas, biotecnologia e logística integrada.",
+        question: "Uma crítica frequente a esse modelo é",
+        options: [
+          "concentração fundiária e impactos socioambientais.",
+          "ausência total de tecnologia.",
+          "fim das exportações agrícolas.",
+          "distribuição igualitária de terras.",
+          "substituição da monocultura pela policultura familiar sempre."
+        ],
+        answer: 0,
+        explanation: "O agronegócio pode gerar produtividade, mas também concentração e impactos ambientais."
+      },
+      {
+        area: "Humanas",
+        topic: "Direitos Humanos",
+        context: "Direitos humanos afirmam a dignidade de todas as pessoas independentemente de origem, religião, gênero ou cor.",
+        question: "Sua finalidade é",
+        options: [
+          "proteger a dignidade humana e limitar abusos.",
+          "garantir privilégios a poucos grupos.",
+          "autorizar violência estatal sem controle.",
+          "eliminar liberdades individuais.",
+          "negar igualdade jurídica."
+        ],
+        answer: 0,
+        explanation: "Direitos humanos protegem a dignidade e a igualdade."
+      },
+      {
+        area: "Humanas",
+        topic: "industrialização brasileira",
+        context: "No século XX, políticas de substituição de importações estimularam a produção interna de bens industrializados.",
+        question: "O objetivo principal era",
+        options: [
+          "reduzir dependência externa e fortalecer a indústria nacional.",
+          "impedir a urbanização.",
+          "abolir o mercado interno.",
+          "retomar a economia colonial açucareira.",
+          "substituir fábricas por artesanato obrigatório."
+        ],
+        answer: 0,
+        explanation: "A substituição de importações buscava produzir internamente bens antes importados."
+      },
+      {
+        area: "Humanas",
+        topic: "ética",
+        context: "Uma decisão ética considera consequências, princípios e respeito aos outros.",
+        question: "A ética se diferencia da moral porque",
+        options: [
+          "reflete criticamente sobre valores e normas de conduta.",
+          "é apenas uma lista fixa de costumes locais.",
+          "dispensa reflexão sobre ações humanas.",
+          "trata somente de fenômenos naturais.",
+          "impede qualquer debate racional."
+        ],
+        answer: 0,
+        explanation: "A ética é reflexão filosófica sobre valores e condutas."
+      },
+      {
+        area: "Humanas",
+        topic: "movimentos sociais",
+        context: "Grupos organizados reivindicam moradia, terra, igualdade racial e direitos trabalhistas.",
+        question: "Movimentos sociais são importantes porque",
+        options: [
+          "pressionam por reconhecimento de direitos e mudanças sociais.",
+          "eliminam a participação cidadã.",
+          "substituem toda instituição democrática.",
+          "impedem debates públicos.",
+          "existem apenas em períodos coloniais."
+        ],
+        answer: 0,
+        explanation: "Movimentos sociais dão visibilidade a demandas coletivas."
+      },
+      {
+        area: "Humanas",
+        topic: "clima",
+        context: "A ilha de calor urbana ocorre quando áreas com muito concreto e pouca vegetação registram temperaturas mais altas.",
+        question: "Uma medida de redução desse problema é",
+        options: [
+          "ampliar áreas verdes e arborização urbana.",
+          "remover praças e parques.",
+          "aumentar a impermeabilização do solo.",
+          "substituir árvores por asfalto.",
+          "eliminar transporte coletivo."
+        ],
+        answer: 0,
+        explanation: "Vegetação reduz temperatura e melhora conforto térmico."
+      },
+      {
+        area: "Humanas",
+        topic: "Era Vargas",
+        context: "O governo Vargas criou leis trabalhistas e fortaleceu a intervenção do Estado na economia.",
+        question: "Uma marca desse período foi",
+        options: [
+          "centralização política e construção de direitos trabalhistas urbanos.",
+          "ausência total do Estado na economia.",
+          "fim da legislação trabalhista.",
+          "retorno ao poder colonial português.",
+          "desindustrialização obrigatória."
+        ],
+        answer: 0,
+        explanation: "Vargas centralizou poder e consolidou direitos trabalhistas."
+      },
+      {
+        area: "Humanas",
+        topic: "cultura indígena",
+        context: "Povos indígenas possuem línguas, territórios, conhecimentos ambientais e formas próprias de organização.",
+        question: "Reconhecer essa diversidade significa",
+        options: [
+          "combater visões homogêneas e valorizar direitos territoriais e culturais.",
+          "tratar todos os povos como iguais em cultura.",
+          "negar sua presença na história brasileira.",
+          "reduzir seus saberes a folclore sem valor.",
+          "defender assimilação forçada."
+        ],
+        answer: 0,
+        explanation: "A diversidade indígena exige reconhecimento cultural e político."
+      },
+      {
+        area: "Humanas",
+        topic: "capitalismo",
+        context: "No capitalismo, a produção de mercadorias visa lucro e depende da propriedade privada dos meios de produção.",
+        question: "Segundo Marx, uma contradição central desse sistema é",
+        options: [
+          "exploração do trabalho assalariado pelo capital.",
+          "ausência de classes sociais.",
+          "fim da produção de mercadorias.",
+          "controle operário pleno das fábricas.",
+          "igualdade econômica automática."
+        ],
+        answer: 0,
+        explanation: "Marx analisou a exploração do trabalho como base da acumulação capitalista."
+      },
+      {
+        area: "Humanas",
+        topic: "território",
+        context: "Território não é apenas área física; envolve poder, controle e pertencimento.",
+        question: "Essa definição permite compreender",
+        options: [
+          "disputas políticas e identitárias pelo espaço.",
+          "apenas medidas geométricas.",
+          "a inexistência de fronteiras simbólicas.",
+          "o espaço como neutro sempre.",
+          "a separação entre sociedade e geografia."
+        ],
+        answer: 0,
+        explanation: "Território envolve relações de poder e identidade."
+      },
+      {
+        area: "Humanas",
+        topic: "ditadura militar",
+        context: "Durante a ditadura militar no Brasil, houve censura, perseguições políticas e restrição de direitos.",
+        question: "Essas práticas indicam",
+        options: [
+          "autoritarismo e supressão de liberdades democráticas.",
+          "ampliação plena da participação popular.",
+          "liberdade irrestrita de imprensa.",
+          "ausência de repressão estatal.",
+          "descentralização democrática total."
+        ],
+        answer: 0,
+        explanation: "Ditaduras restringem direitos e concentram poder."
+      },
+      {
+        area: "Humanas",
+        topic: "hidrografia",
+        context: "Bacias hidrográficas são áreas drenadas por um rio principal e seus afluentes.",
+        question: "Seu estudo é importante para",
+        options: [
+          "planejar uso da água e prevenir impactos ambientais.",
+          "ignorar enchentes urbanas.",
+          "substituir rios por rodovias.",
+          "eliminar políticas de saneamento.",
+          "impedir gestão territorial."
+        ],
+        answer: 0,
+        explanation: "Bacias hidrográficas orientam planejamento ambiental e urbano."
+      },
+      {
+        area: "Humanas",
+        topic: "filosofia antiga",
+        context: "Sócrates valorizava o diálogo e a investigação das próprias certezas.",
+        question: "A atitude socrática pode ser associada à",
+        options: [
+          "busca racional pelo conhecimento e exame crítico de ideias.",
+          "aceitação passiva de opiniões.",
+          "rejeição do debate público.",
+          "defesa da ignorância como virtude final.",
+          "proibição de perguntas."
+        ],
+        answer: 0,
+        explanation: "Sócrates usava o diálogo para questionar certezas e buscar conhecimento."
+      },
+      {
+        area: "Humanas",
+        topic: "reforma agrária",
+        context: "A concentração de terras no Brasil é histórica e está relacionada a conflitos no campo.",
+        question: "A reforma agrária busca",
+        options: [
+          "redistribuir terras e ampliar acesso à produção e moradia rural.",
+          "concentrar ainda mais a propriedade fundiária.",
+          "eliminar agricultores familiares.",
+          "impedir produção de alimentos.",
+          "urbanizar toda a população rural."
+        ],
+        answer: 0,
+        explanation: "Reforma agrária visa democratizar o acesso à terra."
+      },
+      {
+        area: "Humanas",
+        topic: "patrimônio histórico",
+        context: "Centros históricos preservam construções, memórias e formas de vida de diferentes períodos.",
+        question: "A preservação patrimonial permite",
+        options: [
+          "manter referências de memória coletiva e identidade.",
+          "apagar marcas do passado.",
+          "substituir história por consumo apenas.",
+          "impedir turismo cultural.",
+          "negar diversidade social."
+        ],
+        answer: 0,
+        explanation: "Patrimônio histórico preserva memórias e identidades coletivas."
+      },
+      {
+        area: "Humanas",
+        topic: "blocos econômicos",
+        context: "Países formam blocos para reduzir tarifas e ampliar circulação de mercadorias.",
+        question: "Um objetivo desses blocos é",
+        options: [
+          "fortalecer integração econômica regional.",
+          "eliminar qualquer comércio.",
+          "isolar mercados vizinhos.",
+          "proibir acordos multilaterais.",
+          "reduzir toda cooperação."
+        ],
+        answer: 0,
+        explanation: "Blocos econômicos buscam integração e cooperação comercial."
+      },
+      {
+        area: "Humanas",
+        topic: "feudalismo",
+        context: "Na Europa medieval, relações de suserania e vassalagem envolviam proteção, fidelidade e concessão de terras.",
+        question: "Esse sistema expressava",
+        options: [
+          "fragmentação política e vínculos pessoais de dependência.",
+          "centralização nacional moderna.",
+          "produção industrial mecanizada.",
+          "igualdade jurídica universal.",
+          "democracia representativa."
+        ],
+        answer: 0,
+        explanation: "O feudalismo era marcado por poder fragmentado e relações pessoais."
+      },
+      {
+        area: "Humanas",
+        topic: "transporte",
+        context: "A dependência do transporte rodoviário aumenta custos logísticos e consumo de combustíveis fósseis.",
+        question: "Uma alternativa de planejamento seria",
+        options: [
+          "diversificar modais, integrando ferrovias, hidrovias e transporte coletivo.",
+          "abandonar toda infraestrutura ferroviária.",
+          "priorizar somente carros individuais.",
+          "eliminar transporte público.",
+          "impedir circulação de mercadorias."
+        ],
+        answer: 0,
+        explanation: "A integração de modais melhora eficiência e reduz impactos."
+      },
+      {
+        area: "Humanas",
+        topic: "Reforma Protestante",
+        context: "A Reforma Protestante criticou práticas da Igreja Católica e defendeu novas interpretações religiosas.",
+        question: "Uma consequência histórica foi",
+        options: [
+          "fragmentação da cristandade ocidental.",
+          "fim imediato de todas as religiões.",
+          "unificação religiosa europeia total.",
+          "proibição da leitura bíblica.",
+          "ausência de conflitos políticos."
+        ],
+        answer: 0,
+        explanation: "A Reforma contribuiu para a divisão religiosa na Europa."
+      },
+      {
+        area: "Humanas",
+        topic: "consumo",
+        context: "A sociedade de consumo estimula compra constante de bens, muitas vezes associando produtos a status.",
+        question: "Uma crítica sociológica a esse processo é",
+        options: [
+          "transformação de identidades em padrões de consumo.",
+          "desaparecimento da publicidade.",
+          "fim das desigualdades econômicas.",
+          "redução total do descarte.",
+          "ausência de influência cultural."
+        ],
+        answer: 0,
+        explanation: "O consumo pode se tornar marcador de identidade e distinção social."
+      },
+      {
+        area: "Humanas",
+        topic: "energia",
+        context: "Fontes renováveis, como solar e eólica, têm crescido na matriz energética de vários países.",
+        question: "Uma vantagem dessas fontes é",
+        options: [
+          "menor emissão direta de gases de efeito estufa na geração.",
+          "dependência obrigatória de carvão mineral.",
+          "impossibilidade de uso tecnológico.",
+          "emissão maior que todos os combustíveis fósseis.",
+          "ausência total de impactos ambientais."
+        ],
+        answer: 0,
+        explanation: "Solar e eólica emitem menos gases na geração, embora também tenham impactos."
+      },
+      {
+        area: "Humanas",
+        topic: "Abolição",
+        context: "A Lei Áurea extinguiu juridicamente a escravidão, mas não garantiu terra, trabalho ou reparação aos libertos.",
+        question: "Isso contribuiu para",
+        options: [
+          "manutenção da exclusão social no pós-abolição.",
+          "igualdade imediata entre todos os grupos.",
+          "distribuição universal de renda.",
+          "fim do racismo estrutural.",
+          "inclusão automática dos libertos."
+        ],
+        answer: 0,
+        explanation: "A abolição sem políticas de integração manteve desigualdades."
+      },
+      {
+        area: "Humanas",
+        topic: "Estado",
+        context: "O Estado moderno concentra autoridade sobre um território, cria leis e administra instituições públicas.",
+        question: "Um elemento fundamental do Estado é",
+        options: [
+          "soberania sobre um território e população.",
+          "ausência de normas jurídicas.",
+          "inexistência de governo.",
+          "eliminação de fronteiras sempre.",
+          "dependência exclusiva de famílias locais."
+        ],
+        answer: 0,
+        explanation: "Estado envolve território, povo, governo e soberania."
+      },
+      {
+        area: "Humanas",
+        topic: "geografia agrária",
+        context: "A agricultura familiar produz parte significativa dos alimentos consumidos internamente.",
+        question: "Sua importância está ligada à",
+        options: [
+          "produção de alimentos, trabalho rural e diversidade produtiva.",
+          "monocultura exclusiva para exportação.",
+          "ausência de vínculo com mercados locais.",
+          "eliminação de práticas sustentáveis.",
+          "concentração de toda a terra."
+        ],
+        answer: 0,
+        explanation: "Agricultura familiar é relevante para abastecimento e diversidade."
+      },
+      {
+        area: "Humanas",
+        topic: "memória",
+        context: "Museus sobre períodos autoritários expõem documentos, depoimentos e objetos de vítimas.",
+        question: "Esses espaços contribuem para",
+        options: [
+          "preservar memória e evitar a naturalização da violência política.",
+          "apagar violações de direitos.",
+          "celebrar censura estatal.",
+          "impedir reflexão histórica.",
+          "substituir provas por boatos."
+        ],
+        answer: 0,
+        explanation: "Memória histórica ajuda sociedades a reconhecer violações e defender direitos."
+      },
+      {
+        area: "Humanas",
+        topic: "regionalização",
+        context: "O Brasil pode ser regionalizado por critérios naturais, econômicos, culturais ou administrativos.",
+        question: "Isso mostra que regiões são",
+        options: [
+          "recortes espaciais definidos conforme critérios de análise.",
+          "áreas naturais fixas e imutáveis sempre.",
+          "divisões sem finalidade de estudo.",
+          "espaços sem relação social.",
+          "apenas fronteiras internacionais."
+        ],
+        answer: 0,
+        explanation: "Regiões dependem do critério usado para interpretar o espaço."
+      },
+      {
+        area: "Humanas",
+        topic: "República",
+        context: "A República pressupõe que a coisa pública pertence à coletividade e deve ser administrada com responsabilidade.",
+        question: "Esse princípio se opõe ao",
+        options: [
+          "uso privado dos recursos públicos por grupos particulares.",
+          "controle social das instituições.",
+          "interesse público.",
+          "dever de prestação de contas.",
+          "participação cidadã."
+        ],
+        answer: 0,
+        explanation: "República se opõe à apropriação privada do que é público."
+      },
+      {
+        area: "Humanas",
+        topic: "orientação espacial",
+        context: "Coordenadas geográficas utilizam latitude e longitude para localizar pontos na superfície terrestre.",
+        question: "A latitude mede a distância em graus em relação",
+        options: [
+          "à Linha do Equador.",
+          "ao Meridiano de Greenwich.",
+          "ao Trópico de Capricórnio apenas.",
+          "ao nível do mar.",
+          "às placas tectônicas."
+        ],
+        answer: 0,
+        explanation: "Latitude é medida em relação ao Equador."
+      },
+      {
+        area: "Humanas",
+        topic: "conflitos urbanos",
+        context: "A especulação imobiliária valoriza áreas centrais e pode expulsar moradores de baixa renda.",
+        question: "Esse processo é conhecido como",
+        options: [
+          "gentrificação.",
+          "êxodo rural inverso.",
+          "latifúndio urbano produtivo.",
+          "isotermia social.",
+          "nomadismo comercial."
+        ],
+        answer: 0,
+        explanation: "Gentrificação envolve valorização imobiliária e deslocamento de populações."
+      },
+      {
+        area: "Humanas",
+        topic: "epistemologia",
+        context: "O conhecimento científico exige método, evidências, revisão e possibilidade de crítica.",
+        question: "Uma característica da ciência é",
+        options: [
+          "submeter explicações a testes e validação pública.",
+          "recusar qualquer evidência.",
+          "basear-se apenas em autoridade religiosa.",
+          "impedir revisão de hipóteses.",
+          "igualar opinião e comprovação."
+        ],
+        answer: 0,
+        explanation: "A ciência depende de método, crítica e evidências verificáveis."
+      }
+    ];
+
+    const questions = themes.map((q, index) => ({
+      ...q,
+      id: index + 1
+    }));
+
+    let current = 0;
+    let answers = Array(questions.length).fill(null);
+
+    const exam = document.getElementById("exam");
+    const sidebar = document.getElementById("sidebar");
+    const result = document.getElementById("result");
+    const areaBadge = document.getElementById("areaBadge");
+    const answeredBadge = document.getElementById("answeredBadge");
+    const progressBar = document.getElementById("progressBar");
+    const questionTitle = document.getElementById("questionTitle");
+    const questionContext = document.getElementById("questionContext");
+    const optionsEl = document.getElementById("options");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const finishBtn = document.getElementById("finishBtn");
+    const currentNumber = document.getElementById("currentNumber");
+    const answeredCount = document.getElementById("answeredCount");
+    const palette = document.getElementById("palette");
+    const restartBtn = document.getElementById("restartBtn");
+
+    function renderPalette() {
+      palette.innerHTML = "";
+      questions.forEach((q, i) => {
+        const btn = document.createElement("button");
+        btn.className = "qbtn";
+        if (answers[i] !== null) btn.classList.add("answered");
+        if (i === current) btn.classList.add("current");
+        btn.textContent = q.id;
+        btn.onclick = () => {
+          current = i;
+          render();
+        };
+        palette.appendChild(btn);
+      });
+    }
+
+    function render() {
+      const q = questions[current];
+      const answered = answers.filter(a => a !== null).length;
+
+      areaBadge.textContent = `Questão ${q.id} • ${q.area} • ${q.topic}`;
+      answeredBadge.textContent = `${answered} de ${questions.length} respondidas`;
+      progressBar.style.width = `${(answered / questions.length) * 100}%`;
+      currentNumber.textContent = q.id;
+      answeredCount.textContent = answered;
+
+      questionTitle.textContent = q.question;
+      questionContext.textContent = q.context;
+
+      optionsEl.innerHTML = "";
+      q.options.forEach((option, i) => {
+        const div = document.createElement("div");
+        div.className = "option";
+        if (answers[current] === i) div.classList.add("selected");
+        div.textContent = `${String.fromCharCode(65 + i)}) ${option}`;
+        div.onclick = () => {
+          answers[current] = i;
+          render();
+        };
+        optionsEl.appendChild(div);
+      });
+
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === questions.length - 1;
+
+      renderPalette();
+    }
+
+    function finishExam() {
+      const blank = answers.filter(a => a === null).length;
+      if (blank > 0) {
+        const ok = confirm(`Você ainda deixou ${blank} questão(ões) em branco. Deseja finalizar mesmo assim?`);
+        if (!ok) return;
+      }
+
+      const correct = answers.reduce((total, answer, i) => {
+        return total + (answer === questions[i].answer ? 1 : 0);
+      }, 0);
+
+      const wrong = answers.reduce((total, answer, i) => {
+        return total + (answer !== null && answer !== questions[i].answer ? 1 : 0);
+      }, 0);
+
+      const percent = Math.round((correct / questions.length) * 100);
+
+      document.getElementById("scoreTotal").textContent = correct;
+      document.getElementById("wrongTotal").textContent = wrong;
+      document.getElementById("blankTotal").textContent = blank;
+      document.getElementById("percentTotal").textContent = `${percent}%`;
+
+      const review = document.getElementById("review");
+      review.innerHTML = "";
+
+      questions.forEach((q, i) => {
+        if (answers[i] !== q.answer) {
+          const item = document.createElement("div");
+          item.className = "review-item";
+          const userAnswer = answers[i] === null ? "Em branco" : `${String.fromCharCode(65 + answers[i])}) ${q.options[answers[i]]}`;
+          const correctAnswer = `${String.fromCharCode(65 + q.answer)}) ${q.options[q.answer]}`;
+
+          item.innerHTML = `
+            <strong>Questão ${q.id} - ${q.area}</strong>
+            <div>Sua resposta: <span class="wrong">${userAnswer}</span></div>
+            <div>Resposta correta: <span class="correct">${correctAnswer}</span></div>
+            <div>${q.explanation}</div>
+          `;
+          review.appendChild(item);
+        }
+      });
+
+      if (!review.innerHTML) {
+        review.innerHTML = `<div class="review-item"><strong>Perfeito!</strong>Você acertou todas as questões.</div>`;
+      }
+
+      exam.style.display = "none";
+      sidebar.style.display = "none";
+      result.style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    prevBtn.onclick = () => {
+      if (current > 0) {
+        current--;
+        render();
+      }
+    };
+
+    nextBtn.onclick = () => {
+      if (current < questions.length - 1) {
+        current++;
+        render();
+      }
+    };
+
+    finishBtn.onclick = finishExam;
+
+    restartBtn.onclick = () => {
+      current = 0;
+      answers = Array(questions.length).fill(null);
+      result.style.display = "none";
+      exam.style.display = "block";
+      sidebar.style.display = "block";
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    render();
+  </script>
+</body>
+</html>
